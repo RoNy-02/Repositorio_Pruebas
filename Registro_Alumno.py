@@ -230,6 +230,7 @@ def exportar_pdf_alumno_seleccionado(matricula, calificaciones=None):
         pdf.ln(10)
 
         # Tabla de calificaciones y promedio
+        # Tabla de calificaciones y promedio (centrada, línea vertical entre columnas)
         if calificaciones:
             materias = [
                 "Base de Datos",
@@ -239,53 +240,65 @@ def exportar_pdf_alumno_seleccionado(matricula, calificaciones=None):
                 "Proyecto Integrador I",
                 "Tópicos de Calidad para el Diseño de Software"
             ]
-            # Si tienes solo 5 materias, elimina "Proyecto Integrador I" de la lista y ajusta el resto
             if len(calificaciones) == 5:
                 materias = materias[:2] + materias[3:]
 
-            pdf.set_font("Arial", size=14)
+            pdf.set_font("Arial", "B", 14)
             pdf.cell(0, 10, txt="Calificaciones", ln=1, align='C')
             pdf.ln(2)
 
-            # Encabezados en negritas, con líneas arriba y abajo
+            # Centrado manual de la tabla
+            table_width = 140  # 100 + 40
+            x_centro = (pdf.w - table_width) / 2
+            pdf.set_x(x_centro)
+
+            # Encabezados (línea abajo)
             pdf.set_font("Arial", "B", 12)
-            x_inicio = pdf.get_x()
-            y_inicio = pdf.get_y()
-            pdf.cell(100, 8, "Materia", border="LTR", align="L")
-            pdf.cell(40, 8, "Calificación", border="TR", align="C", ln=1)
-            pdf.set_font("Arial", size=12)
+            y_encabezado = pdf.get_y()
+            pdf.cell(100, 8, "Materia", border="B", align="L")
+            pdf.cell(40, 8, "Calificación", border="B", align="C", ln=1)
+            pdf.set_font("Arial", "", 12)
+
+            # Dibuja la línea vertical entre columnas (encabezado y filas)
+            x_linea = x_centro + 100
+            y_inicio = y_encabezado
+            y_fin = y_encabezado + 8 * len(materias)
+            pdf.line(x_linea, y_inicio, x_linea, y_inicio + 8 * (len(materias) + 1))
+
+# ...existing code...
 
             suma = 0
-            for materia, calificacion in zip(materias, calificaciones):
+            for idx, (materia, calificacion) in enumerate(zip(materias, calificaciones)):
+                y_fila = y_encabezado + 8 * (idx + 1)
+                pdf.set_x(x_centro)
+                pdf.cell(100, 8, materia, border=0, align="L")
+                pdf.set_font("Arial", "B", 12)
+                pdf.cell(40, 8, str(calificacion), border=0, align="C", ln=1)
+                pdf.set_font("Arial", "", 12)
                 try:
-                    calif_num = float(calificacion)
+                    suma += float(calificacion)
                 except:
-                    calif_num = 0
-                suma += calif_num
-                pdf.cell(100, 8, materia, border="L", align="L")
-                pdf.set_font("Arial", "B", 12)  # Calificación en negritas
-                pdf.cell(40, 8, str(calificacion), border="R", align="C", ln=1)
-                pdf.set_font("Arial", "", 12)   # Regresa a normal para la siguiente fila
+                    pass
+
+# ...existing code...
 
             promedio = suma / len(calificaciones)
             pdf.ln(2)
-            # Promedio en negritas y subrayado
-            pdf.set_font("Arial", "B", 12)
-            pdf.cell(100, 8, "", border=0)
-            pdf.cell(40, 8, "", border=0, ln=1)
+            pdf.set_x(x_centro)
+            pdf.set_font("Arial", "B", 12)  # <-- TEXTO EN NEGRITAS
             pdf.cell(100, 8, "Promedio General:", border=0, align="R")
             pdf.set_font("Arial", "B", 12)
-            pdf.set_text_color(0, 0, 0)
-            # Guarda la posición antes de imprimir el número
             x_num = pdf.get_x()
             y_num = pdf.get_y()
             promedio_str = f"{promedio:.2f}"
-            pdf.cell(0, 8, promedio_str, border=0, align="L")
-            # Calcula el ancho del número y subraya solo el número
+            pdf.cell(40, 8, promedio_str, border=0, align="C")
             num_width = pdf.get_string_width(promedio_str)
-            pdf.line(x_num, y_num + 8, x_num + num_width, y_num + 8)
+            # Subraya solo el número del promedio
+            pdf.line(x_num + (40 - num_width) / 2, y_num + 8, x_num + (40 + num_width) / 2, y_num + 8)
             pdf.ln(10)
             pdf.set_text_color(0, 0, 0)
+
+# ...existing code...
 
         # Foto del alumno
         if row[7]:
