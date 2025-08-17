@@ -539,7 +539,7 @@ def actualizar_carreras(event):
 
 direccion_combo.bind('<<ComboboxSelected>>', actualizar_carreras)
 
-btnEliminar = tk.Button(frame_registros, text="Eliminar", font=("arial", 15, "italic"), fg="white", bg="#FF0000", command=eliminar_alumno)
+btnEliminar = tk.Button(frame_registros, text="Eliminar", font=("arial", 15, "italic"), fg="white", bg="#FF00CC", command=eliminar_alumno)
 btnEliminar.place(x=680, y=40)
 
 etiqueta_imagen = tk.Label(frame_registros, bg="white", relief="groove")
@@ -559,10 +559,10 @@ btn_agregar_imagen = tk.Button(
 )
 btn_agregar_imagen.pack(fill="both", expand=True, padx=5, pady=5)
 
-btnEditar = tk.Button(frame_registros, text="Editar", font=("arial", 15, "bold"), fg="white", bg="#FF8800", command=editar_alumno)
+btnEditar = tk.Button(frame_registros, text="Editar", font=("arial", 15, "bold"), fg="white", bg="#FF00CC", command=editar_alumno)
 btnEditar.place(x=800, y=40)
 
-btnGuardar = tk.Button(frame_registros, text="Guardar", font=("arial", 15, "bold"), fg="white", bg="#228B22", command=singuardar)
+btnGuardar = tk.Button(frame_registros, text="Guardar", font=("arial", 15, "bold"), fg="white", bg="#FF00CC", command=singuardar)
 btnGuardar.place(x=890, y=40)
 
 tree_frame = tk.Frame(ventana)
@@ -574,7 +574,7 @@ for col in columns:
     tree.column(col, anchor=tk.S, width=180)
 tree.pack(fill="both", expand=True)
 
-btn_Salir = tk.Button(ventana, text="Salir", font=("arial", 15, "italic"), bg="#FF0000", fg="black", command=Salir)
+btn_Salir = tk.Button(ventana, text="Salir", font=("arial", 15, "italic"), bg="#FF00CC", fg="black", command=Salir)
 btn_Salir.place(x=1020, y=610)
 
 def cargar_datos_en_campos(event):
